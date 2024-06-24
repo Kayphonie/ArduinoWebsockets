@@ -412,6 +412,14 @@ namespace websockets {
     }
 
     WebsocketsMessage WebsocketsClient::readBlocking() {
+	if (available() && _endpoint.poll()) {
+            auto msg = _endpoint.recv();
+            if(!msg.isEmpty()) return msg;
+        }
+
+        return {};
+	    
+	/*
         while(available()) {
 #ifdef PLATFORM_DOES_NOT_SUPPORT_BLOCKING_READ
             while(available() && _endpoint.poll() == false) continue;
@@ -420,6 +428,7 @@ namespace websockets {
             if(!msg.isEmpty()) return msg;
         }
         return {};
+	*/
     }
 
     bool WebsocketsClient::send(const WSInterfaceString& data) {
